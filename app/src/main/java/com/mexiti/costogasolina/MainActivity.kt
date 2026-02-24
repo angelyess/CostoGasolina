@@ -47,10 +47,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CostoGasolinaTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.LightGray
                 ) {
                     CostGasLayout()
                 }
@@ -61,119 +60,103 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CostGasLayout() {
-    var precioLitroEntrada by remember {
-        mutableStateOf("")
-    }
-    var cantLitrosEntrada by remember {
-        mutableStateOf("")
-    }
-    var propinaEntrada by remember {
-        mutableStateOf("")
-    }
-    var darPropina by remember {
-        mutableStateOf(false)
-    }
+    var precioLitroEntrada by remember { mutableStateOf("") }
+    var cantLitrosEntrada by remember { mutableStateOf("") }
+    var propinaEntrada by remember { mutableStateOf("") }
+    var darPropina by remember { mutableStateOf(false) }
 
     val precioLitro = precioLitroEntrada.toDoubleOrNull() ?: 0.0
     val cantLitros = cantLitrosEntrada.toDoubleOrNull() ?: 0.0
     val propina = propinaEntrada.toDoubleOrNull() ?: 0.0
-    val total = calcularMonto(precioLitro,cantLitros, darPropina = darPropina, propina = propina)
+    val total = calcularMonto(precioLitro, cantLitros, darPropina, propina)
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(15.dp)
             .background(Color.LightGray, shape = RoundedCornerShape(15.dp)),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(R.string.calcular_monto),
-             modifier= Modifier.fillMaxWidth()
-                 .height(50.dp),
+            modifier = Modifier.fillMaxWidth().height(50.dp),
             fontWeight = FontWeight.Bold,
-            fontSize = 25.sp
-            ,
+            fontSize = 25.sp,
             textAlign = TextAlign.Center
-            )
+        )
 
-       EditNumberField(
-           label = R.string.ingresa_gasolina,
-           leadingIcon = R.drawable.money_gas ,
-           keyboardsOptions = KeyboardOptions.Default.copy(
-               keyboardType = KeyboardType.Number,
-               imeAction = ImeAction.Next
-           ),
-           value = precioLitroEntrada,
-           onValueChanged = {precioLitroEntrada = it}
-       )
-       EditNumberField(
-           label = R.string.litros,
-           leadingIcon = R.drawable.gasolina ,
-           keyboardsOptions = KeyboardOptions.Default.copy(
-               keyboardType = KeyboardType.Number,
-               imeAction = ImeAction.Next
-           ) ,
-           value = cantLitrosEntrada,
-           onValueChanged = {cantLitrosEntrada = it}
-       )
-       EditNumberField(
-           label = R.string.propina,
-           leadingIcon = R.drawable.outline_18_up_rating_24,
-           keyboardsOptions = KeyboardOptions.Default.copy(
-               keyboardType = KeyboardType.Number,
-               imeAction = ImeAction.Done
-           ) ,
-           value = propinaEntrada,
-           onValueChanged = {propinaEntrada = it}
-       )
-       AddTip(darPropina = darPropina
-           , onTipCheckedChange = {darPropina = it}
-
-       )
+        EditNumberField(
+            label = R.string.ingresa_gasolina,
+            leadingIcon = R.drawable.money_gas,
+            keyboardsOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            value = precioLitroEntrada,
+            onValueChanged = { precioLitroEntrada = it }
+        )
+        EditNumberField(
+            label = R.string.litros,
+            leadingIcon = R.drawable.gas_24, // Asegúrate de que este icono exista
+            keyboardsOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            value = cantLitrosEntrada,
+            onValueChanged = { cantLitrosEntrada = it }
+        )
+        EditNumberField(
+            label = R.string.propina,
+            leadingIcon = R.drawable.outline_18_up_rating_24,
+            keyboardsOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            value = propinaEntrada,
+            onValueChanged = { propinaEntrada = it }
+        )
+        AddTip(
+            darPropina = darPropina,
+            onTipCheckedChange = { darPropina = it }
+        )
 
         Text(
-            text = stringResource(R.string.monto_total,total),
+            text = stringResource(R.string.monto_total, total),
             fontWeight = FontWeight.Black,
             fontSize = 30.sp
         )
-
     }
-
 }
 
 @Composable
 fun EditNumberField(
     @StringRes label: Int,
     @DrawableRes leadingIcon: Int,
-    keyboardsOptions:KeyboardOptions,
+    keyboardsOptions: KeyboardOptions,
     value: String,
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     TextField(
-        label = { Text(text = stringResource(id = label))  },
+        label = { Text(text = stringResource(id = label)) },
         value = value,
         singleLine = true,
-        leadingIcon = { Icon(painter = painterResource(id = leadingIcon) , contentDescription = null) },
+        leadingIcon = { Icon(painter = painterResource(id = leadingIcon), contentDescription = null) },
         keyboardOptions = keyboardsOptions,
-        modifier = modifier.fillMaxWidth()
-        ,
+        modifier = modifier.fillMaxWidth(),
         onValueChange = onValueChanged,
-
     )
-
 }
-
 
 @Composable
 fun AddTip(
     darPropina: Boolean,
     onTipCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .size(70.dp),
+        modifier = modifier.fillMaxWidth().size(70.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -181,23 +164,20 @@ fun AddTip(
             modifier = Modifier.padding(20.dp)
         )
         Switch(
-            checked = darPropina ,
+            checked = darPropina,
             onCheckedChange = onTipCheckedChange
         )
     }
-
-
 }
 
-
-private fun calcularMonto(precio: Double, cantLitros: Double, darPropina: Boolean, propina:Double ): String{
+private fun calcularMonto(precio: Double, cantLitros: Double, darPropina: Boolean, propina: Double): String {
     var monto = precio * cantLitros
-    if ( darPropina){
-        monto +=  propina
+    if (darPropina) {
+        monto += propina
     }
     return NumberFormat.getCurrencyInstance().format(monto)
-
 }
+
 @Preview(showBackground = true)
 @Composable
 fun CostGasLayoutPreview() {
