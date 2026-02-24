@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.LightGray
+                    color = Color.LightGray //Cambio fondo a gris
                 ) {
                     CostGasLayout("Android")
                 }
